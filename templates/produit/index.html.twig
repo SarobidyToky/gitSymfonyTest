@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Hello !
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h3>Liste des produits</h3>
+
+        {% for messsage in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        <table class="table table-striped" id="MyTable" onclick="functionn()">
+            <thead>
+                <tr>
+                    <th scope="col">Designation</th>
+                    <th scope="col">Date de péremption</th>
+                    <th scope="col">Quantité</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for produit in produits %}
+                <tr>
+                    <th scope="row">{{ produit.designation }}</th>
+                    <td>{{ produit.datePeremption | date('d/m/Y') }}</td>
+                    <td>{{ produit.quantite }}</td>
+                    <td>
+                        <a href="{{ path('produit.edit', {id: produit.id}) }}" class="btn btn-secondary">Editer</a>
+                        <form method="post" action="{{ path('produit.delete', {id: produit.id}) }}" style="display: inline-block"
+                              onsubmit="return confirm('Etes vous vraiment sûr ?')">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ produit.id) }}">
+                            <button class="btn btn-danger">Supprimer</button>
+                        </form>
+                        <a href="{{ path('produit.show', {id:produit.id}) }}" class="btn btn-warning">Voir</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <div class="text-right">
+            <a href="{{ path('produit.new') }}" class="btn btn-primary">Créer un produit</a>
+        </div>
+    </div>
+
+{% endblock %}
